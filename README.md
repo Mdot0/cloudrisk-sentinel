@@ -1,1 +1,1 @@
-# cloudrisk-sentinel
+# Cloudrisk-Sentinel
