@@ -26,3 +26,21 @@ jobs:
 
       - name: Run tests
         run: pytest -q
+
+      - name: Dependency audit (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt || true 
+
+      - name: Set up Node.js (for Snyk CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dependency scan (Snyk) - Reject high/critical vulnerabilities
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: | 
+          npm install -g snyk 
+          snyk auth $SNYK_TOKEN
+          snyk test --severity-threshold=high
