@@ -1,5 +1,9 @@
 name: CI
 
+permissions:
+  contents: read
+  pull-requests: read
+
 on:
   push:
     branches: ["main", "dev"]
@@ -31,6 +35,8 @@ jobs:
       
       - name: Secrets scan (gitleaks)
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Dependency audit (pip-audit)
         run: |
