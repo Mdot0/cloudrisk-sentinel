@@ -42,6 +42,11 @@ jobs:
         run: |
           pip install pip-audit
           pip-audit -r requirements.txt || true 
+          
+      - name: IaC scan (Checkov) - Terraform 
+        run: | 
+          pip install checkov
+          checkov -d terraform/
 
       - name: Set up Node.js (for Snyk CLI)
         uses: actions/setup-node@v4
