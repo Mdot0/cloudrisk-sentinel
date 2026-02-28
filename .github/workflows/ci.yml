@@ -52,8 +52,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-        run: |
-          npm install -g snyk
 
       - name: Build Docker Image
         run: |
@@ -63,5 +61,6 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: | 
+          npm install -g snyk
           snyk auth $SNYK_TOKEN
           snyk container test cloudrisk-sentinel:ci --severity-threshold=high
