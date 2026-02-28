@@ -48,19 +48,25 @@ jobs:
           pip install checkov
           checkov -d terraform/ || true
 
-      - name: Set up Node.js & install snyk
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+      
+      - name: Dependency scan & installation of snyk
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk auth $SNYK_TOKEN
+          npm install -g snyk
+          snyk test --severity-threshold=high
 
       - name: Build Docker Image
         run: |
           docker build -t cloudrisk-sentinel:ci .
 
-      - name: Container scan (Snyk) - Reject high/critical vulnerabilities
+      - name: Docker Container Scan (SNYK) - Rejects high/critical vulns 
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: | 
-          npm install -g snyk
-          snyk auth $SNYK_TOKEN
           snyk container test cloudrisk-sentinel:ci --severity-threshold=high
